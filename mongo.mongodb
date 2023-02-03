@@ -200,3 +200,50 @@ db.inventory.deleteMany({
 
 
 db.inventory.deleteMany({}); // удалить всех
+
+CREATE
+1. insertOne(document)
+2. insertMany(document)
+READ 
+find(filter)
+UPDATE 
+1. updateOne(filter, updateValues)
+2. updateMany(filter, updateValues)
+3. replaceOne()
+DELETE 
+1. deleteOne(filter)
+2. deleteMany(filter)
+
+
+/*
+Знайти всі документи, в яких або статус Р, або D і при цьому кількість (qty >= 75).
+*/
+
+db; // посмотреть какая БД
+
+db.inventory.find({
+    $or: [{
+        status: 'P'
+    }, {
+        status: 'D',
+        qty: {
+            $gte: 75
+        }
+    }]
+});
+
+/*
+Оновити статус (встановити Done)для всіх документів, де size.w > 30
+*/
+
+db.inventory.updateMany({
+    'size.w': {
+        $gt: 30
+    }
+}, {
+        $set: {
+            status: 'Done'
+        }
+});
+
+db.inventory.deleteMany({})
