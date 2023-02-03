@@ -1,0 +1,202 @@
+db.students.insertOne({
+    name: 'Josh',
+    age: 30
+})
+
+db.inventory.insertMany([
+   { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, status: "A" },
+   { item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D" },
+   { item: "planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, status: "D" },
+   { item: "postcard", qty: 45, size: { h: 10, w: 15.25, uom: "cm" }, status: "A" }
+]);
+
+db.students.insertOne({
+    firstName: "Rick",
+    faculty: {
+        address: {
+            city: "Dnipro",
+            street: "Centralna"
+        }
+    }
+});
+
+
+//.find() ---- SELECT
+
+// FIND ALL
+
+db.students.find();
+db.inventory.find();
+
+db.students.find({
+    firstName: 'John'
+});
+
+
+//// exact matching
+db.inventory.find({
+    status: 'D'
+});
+
+/// и А и Д
+db.inventory.find({
+    status: {
+        $in: ['A', 'D']
+    }
+})
+
+///NOT IN
+db.inventory.find({
+    status: {
+        $nin: ['A', 'D']
+    }
+}) 
+
+// больше 20
+
+db.inventory.find({
+    qty: {
+        $gt: 20
+    }
+}) 
+
+//// condition1 AND condition2
+/* Статус А + кількість менше ніж 50 */
+
+db.inventory.find({
+   status: 'A',
+   qty: {
+    $lt: 50
+   }
+});
+
+/// OR (або одне, або інше)
+
+db.inventory.find({
+   $or: [{
+    status: 'D'
+   }, {
+    qty: 45
+   }]
+});
+
+/*
+Знайти всі документи, в яких статус: А або qty більше або дорівнює 40
+*/
+db.inventory.find({
+   $or: [{
+    status: 'D'
+   }, {
+    qty: {
+        $gte : 40
+    }
+   }]
+});
+
+/*
+Знайти всі документи, в яких статус: A і при цьому size.h > 10
+*/
+
+db.inventory.find({
+    status: 'A',
+    'size.h': {
+        $gt: 10
+    }
+});
+
+db.inventory.find({
+   $and: [{
+    status: 'A'
+   }, {
+    "size.h": {
+        $gt: 10
+    }
+   }]
+});
+
+/* EXISTS */
+
+/// Всіх студентів, в яких є ім'я (firstName)
+
+db.students.find({
+    firstName: {
+        $exists: true
+    }
+});
+
+db.students.find({
+    firstName: {
+        $exists: true
+    }, 
+    lastName: {
+        $exists: true
+    }
+});
+
+db.students.drop();
+db.inventory.drop();
+
+
+db.inventory.insertMany( [
+   { item: "canvas", qty: 100, size: { h: 28, w: 35.5, uom: "cm" }, status: "A" },
+   { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "mat", qty: 85, size: { h: 27.9, w: 35.5, uom: "cm" }, status: "A" },
+   { item: "mousepad", qty: 25, size: { h: 19, w: 22.85, uom: "cm" }, status: "P" },
+   { item: "notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, status: "P" },
+   { item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D" },
+   { item: "planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, status: "D" },
+   { item: "postcard", qty: 45, size: { h: 10, w: 15.25, uom: "cm" }, status: "A" },
+   { item: "sketchbook", qty: 80, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "sketch pad", qty: 95, size: { h: 22.85, w: 30.5, uom: "cm" }, status: "A" }
+] );
+
+// UPDATE
+
+db.inventory.updateOne({
+    status: 'D'
+}, {
+    $set: {
+        status: 'Done'
+    }
+});
+
+db.inventory.updateMany({
+    status: 'P'
+}, {
+    $set: {
+        status: 'Processing'
+    }
+});
+
+//// всі документи зі статусом А оновити на статус "new"
+
+db.inventory.updateMany({
+    status: 'A'
+}, {
+    $set: {
+        status: 'New'
+    }
+});
+
+/// Оновлення вкладених 
+//// Оновити uom = ft всіх, в кого size.uom = in
+
+db.inventory.updateMany({
+    'size.uom': 'in'
+}, {
+    $set: {
+        'size.uom' : 'ft'
+    }
+});
+
+db.inventory.find();
+
+//////Delete
+
+db.inventory.deleteMany({
+    status: "new"
+});
+
+
+db.inventory.deleteMany({}); // удалить всех
