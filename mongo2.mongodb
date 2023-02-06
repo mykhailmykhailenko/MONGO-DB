@@ -111,3 +111,5 @@ db.users.insertOne ({
     email: 'doe@ukr.net',
     password: '123321'
 })
+
+db.users.deleteMany({})
