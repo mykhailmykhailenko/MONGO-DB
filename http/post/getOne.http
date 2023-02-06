@@ -1,0 +1,1 @@
+GET http://localhost:5000/api/posts/63e182f592cb6ad2ed691ebc HTTP/1.1
