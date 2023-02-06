@@ -1,0 +1,113 @@
+db.createCollection("cats", {
+    // validationLevel: strict | moderate
+    // validationAction: error | warn
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ['name', 'color', 'weight'],
+            properties: {
+                name: {
+                    bsonType: "string",
+                    description: "'name' must be a string and is required"
+                },
+                color: {
+                    bsonType: "string",
+                    description: "'color' must be a string and is required"
+                },
+                weight: {
+                    bsonType: "double",
+                    description: "'weight' must be a string and is required"
+                },
+                address: {
+                    bsonType: "object",
+                    required: ['city', 'street'],
+                    properties: {
+                        city: {
+                            bsonType: "string"
+                        },
+                        street: {
+                            bsonType: "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
+
+db.cats.insertOne({
+    name: 'Murzik',
+    color: 'brown',
+    weight: 11.1,
+    address: 'Dnipro'
+});
+
+/*
+ Створити колекцію юзерів та описати наступну валідацію:
+
+ Юзери
+ * firstName - string
+ * lastName - string, 
+ * birthday - date
+ address - object, 
+    * city,
+    street,
+    house
+ * email - string
+ * password - string
+
+*/
+
+db.createCollection("users", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ['firstName', 'lastName', 'birthday', 'email', 'password'],
+            properties: {
+                firstName: {
+                    bsonType: 'string',
+                    description: "'firstName' must be a string and is required"
+                },
+                lastName: {
+                    bsonType: 'string',
+                    description: "'lastName' must be a string and is required"
+                },
+                birthday: {
+                    bsonType: 'date',
+                    description: "'birthday' must be a date and is required"
+                },
+                email: {
+                    bsonType: 'string',
+                    description: "'email' must be a string and is required"
+                },
+                password: {
+                    bsonType: 'string',
+                    description: "'password' must be a string and is required"
+                },
+                address: {
+                    bsonType: 'object',
+                    required: ['city'],
+                    properties: {
+                        city: {
+                            bsonType: 'string'
+                        },
+                        street: {
+                            bsonType: 'string'
+                        },
+                        house: {
+                            bsonType: 'string'
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+
+db.users.insertOne ({
+    firstName: 'John',
+    lastName: 'Doe',
+    birthday: '1995-08-08',
+    email: 'doe@ukr.net',
+    password: '123321'
+})
