@@ -65,19 +65,19 @@ db.products.insertMany([
         name: 'Samsung',
         price: 22222.22,
         amount: 1,
-        manufacturerId: new ObjectId('63cfd2e1fa0453f594031019')
+        manufacturerId: new ObjectId('63e152bfc22295455c64b4b5')
     },
      {
         name: 'Xiaomu',
         price: 111.11,
         amount: 2,
-        manufacturerId: new ObjectId('63cfd2e1fa0453f594031019')
+        manufacturerId: new ObjectId('63e152bfc22295455c64b4b5')
     },
      {
         name: 'Sony',
         price: 3333.3,
         amount: 1,
-        manufacturerId: new ObjectId('63cfd2e1fa0453f594031019')
+        manufacturerId: new ObjectId('63e152bfc22295455c64b4b5')
     }
 ]);
 
