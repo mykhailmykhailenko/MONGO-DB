@@ -128,3 +128,22 @@ db.products.aggregate([
         }
     }
 ]);
+
+
+////SORT
+
+db.products.aggregate([
+    {/**
+     * Provide any number of field/order pairs.
+     */
+    $sort: {
+      price: -1
+    }}, {
+        $limit: 3
+    }
+]);
+
+//Pagination
+
+
+db.products.find().limit(3).skip(2);
