@@ -115,5 +115,16 @@ db.products.aggregate([
          * To exclude multiple fields, pass the field names in an array.
          */
         $unset: 'manufacturerId'
+    }, {
+        /**
+         * _id: The id of the group.
+         * fieldN: The first field name.
+         */
+        $group: {
+          _id: "$manufacturer.name",
+         countProducts: {
+            $sum: "$amount"
+          }
+        }
     }
 ]);
