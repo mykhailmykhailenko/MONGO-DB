@@ -147,3 +147,147 @@ db.products.aggregate([
 
 
 db.products.find().limit(3).skip(2);
+
+
+/*
+Зробити колекцію студентів.
+- Ім'я
+- Прізвище
+- мейл
+- група
+
+Зробити колекцію груп.
+- назва групи
+- ім'я викладача.
+
+Завдання:
+1. Створити і наповнити 2-3 сутностями кожну колекцію.
+2. Порахувати кількість студентів в кожній групі.
+
+*/
+
+db.createCollection('students', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['firstName', 'lastName', 'email', 'groupId'],
+            properties: {
+                firstName: {
+                    bsonType: 'string'
+                },
+                lastName: {
+                    bsonType: 'string'
+                },
+                email: {
+                    bsonType: 'string'
+                },
+                groupId: {
+                    bsonType: 'objectId'
+                }
+
+            }
+        }
+    }
+})
+
+db.students.insertMany([
+    {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'doe123@ukr.net',
+        groupId: new ObjectId('63e16b4c34197fc226f080bd')
+    },    {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'doeJane123@ukr.net',
+        groupId: new ObjectId('63e16b4c34197fc226f080bd')
+    },    {
+        firstName: 'Josh',
+        lastName: 'bush',
+        email: 'bush123@ukr.net',
+        groupId: new ObjectId('63e16b4c34197fc226f080be')
+    }, {
+        firstName: 'Misha',
+        lastName: 'Mykh',
+        email: 'Misha123@ukr.net',
+        groupId: new ObjectId('63e16b4c34197fc226f080be')
+    }, {
+        firstName: 'Nika',
+        lastName: 'Kras',
+        email: 'Kras123@ukr.net',
+        groupId: new ObjectId('63e16b4c34197fc226f080be')
+    },  
+]) 
+
+
+db.createCollection('groups', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['name', 'lector'],
+            properties: {
+                name: {
+                    bsonType: 'string'
+                },
+                lector: {
+                    bsonType: 'string'
+                }
+            }
+        }
+    }    
+})
+
+db.groups.insertMany([
+    {
+        name: '13',
+        lector: 'SpiderMan'
+    },{
+        name: '12',
+        lector: 'SuperMan'
+    }, {
+        name: '14',
+        lector: 'Halk'
+    },
+])
+
+db.students.aggregate([
+    {/**
+     * from: The target collection.
+     * localField: The local join field.
+     * foreignField: The target join field.
+     * as: The name for the results.
+     * pipeline: Optional pipeline to run on the foreign collection.
+     * let: Optional variables to use in the pipeline field stages.
+     */
+    $lookup: {
+      from: 'groups',
+      localField: 'groupId',
+      foreignField: '_id',
+      as: 'groupInfo'
+    }}, { /**
+     * path: Path to the array field.
+     * includeArrayIndex: Optional name for index.
+     * preserveNullAndEmptyArrays: Optional
+     *   toggle to unwind null and empty values.
+     */
+    $unwind: '$groupInfo'
+    }, {
+        /**
+         * Provide the field name to exclude.
+         * To exclude multiple fields, pass the field names in an array.
+         */
+        $unset: 'groupId'
+    }, {
+        /**
+         * _id: The id of the group.
+         * fieldN: The first field name.
+         */
+        $group: {
+          _id: '$groupInfo.name',
+          countStudents: {
+            $sum: 1
+          }
+        }
+    }
+])
+
